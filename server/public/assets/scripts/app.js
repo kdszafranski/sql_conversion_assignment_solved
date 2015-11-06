@@ -24,7 +24,7 @@ function getData(values){
       success: function(data){
          updateDOM(data);
       }
-   })
+   });
 }
 
 function addSomeone(){
@@ -55,7 +55,6 @@ function deletePerson(){
       url: "/data",
       data: deletedId,
       success: function(data){
-
          getData();
       }
    })

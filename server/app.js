@@ -38,8 +38,7 @@ app.get('/data', function(req,res){
 
 // Add a new person
 app.post('/data', function(req,res){
-    console.log(req);
-
+    // pull the data off of the request
     var addedPerson = {
         "name" : req.body.peopleAdd,
         "location" : req.body.locationAdd
@@ -49,11 +48,6 @@ app.post('/data', function(req,res){
         //SQL Query > Insert Data
         //Uses prepared statements, the $1 and $2 are placeholder variables. PSQL then makes sure they are relatively safe values
         //and then uses them when it executes the query.
-
-        //var query = "INSERT INTO people (name, location) VALUES ('" + addedPerson.name + "', '" + addedPerson.location + "')";
-        //console.log(query);
-        //client.query(query);
-
         client.query("INSERT INTO people (name, location) VALUES ($1, $2) RETURNING id", [addedPerson.name, addedPerson.location],
             function(err, result) {
                 if(err) {
