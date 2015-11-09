@@ -5,10 +5,18 @@ var path = require('path');
 var bodyParser = require('body-parser');
 
 var pg = require('pg');
-var connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/sql_lecture';
+var connectionString = "";
+
+if(process.env.DATABASE_URL != undefined) {
+    connectionString = process.env.DATABASE_URL + "ssl";
+} else {
+    connectionString = 'postgres://localhost:5432/sql_lecture';
+}
+
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({expanded: true}));
+//app.use(bodyParser.urlencoded({expanded: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Get all the people information
 app.get('/data', function(req,res){
@@ -41,7 +49,7 @@ app.post('/data', function(req,res){
     // pull the data off of the request
     var addedPerson = {
         "name" : req.body.peopleAdd,
-        "location" : req.body.locationAdd,
+        "city" : req.body.locationAdd,
         "animal" : req.body.animal,
         "address" : req.body.address
     };
@@ -50,8 +58,8 @@ app.post('/data', function(req,res){
         //SQL Query > Insert Data
         //Uses prepared statements, the $1 and $2 are placeholder variables. PSQL then makes sure they are relatively safe values
         //and then uses them when it executes the query.
-        client.query("INSERT INTO people (name, location, spirit_animal, address) VALUES ($1, $2, $3, $4) RETURNING id",
-            [addedPerson.name, addedPerson.location, addedPerson.animal, addedPerson.address],
+        client.query("INSERT INTO people (name, city, spirit_animal, address) VALUES ($1, $2, $3, $4) RETURNING id",
+            [addedPerson.name, addedPerson.city, addedPerson.animal, addedPerson.address],
             function(err, result) {
                 if(err) {
                     console.log("Error inserting data: ", err);
